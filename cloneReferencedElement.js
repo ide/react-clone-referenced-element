@@ -22,7 +22,7 @@ function cloneReferencedElement(element, config, ...children) {
 
   return React.cloneElement(element, {
     ...config,
-    ref: component => {
+    ref(component) {
       cloneRef(component);
       originalRef(component);
     },
