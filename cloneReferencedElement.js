@@ -14,7 +14,7 @@ function cloneReferencedElement(element, config, ...children) {
       console.warn(
         'Cloning an element with a ref that will be overwritten because it ' +
         'is not a function. Use a composable callback-style ref instead. ' +
-        'Ignoring ref: ' + originalRef,
+        'Ignoring ref: ' + originalRef
       );
     }
     return React.cloneElement(element, config, ...children);
