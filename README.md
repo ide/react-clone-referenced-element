@@ -2,6 +2,15 @@
 
 This is a version of `React.cloneElement` that preserves the original element's ref even if you specify a new ref for the clone.
 
+## Installation
+
+Install this module from npm:
+```sh
+npm install --save react-native-clone-referenced-element
+```
+
+Also, make sure that you have enabled "es7.trailingFunctionCommas" in your Babel configuration.
+
 ## Usage
 
 The signature of `cloneReferencedElement` is the same as that of `React.cloneElement`. However, when using callback refs, it will preserve the ref on the original component if there is one.
