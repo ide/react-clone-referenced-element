@@ -1,4 +1,4 @@
-# cloneReferencedElement for React Native
+# cloneReferencedElement for React
 
 This is a version of `React.cloneElement` that preserves the original element's ref even if you specify a new ref for the clone.
 
@@ -6,10 +6,16 @@ This is a version of `React.cloneElement` that preserves the original element's 
 
 Install this module from npm:
 ```sh
-npm install --save react-native-clone-referenced-element
+npm install --save react-clone-referenced-element
 ```
 
-Also, make sure that you have enabled "es7.trailingFunctionCommas" in your Babel configuration.
+This library was designed for React Native, so if you are using it with React in other environments, you will need to compile the code first. How you do this is up to you. With Babel, use the following plugins:
+
+ - es2015-block-scoping
+ - object-rest-spread
+ - trailing-function-commas
+
+You will also need to transform or define a global variable named `__DEV__`.
 
 ## Usage
 

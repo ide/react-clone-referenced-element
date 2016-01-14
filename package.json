@@ -1,24 +1,24 @@
 {
-  "name": "react-native-clone-referenced-element",
+  "name": "react-clone-referenced-element",
   "version": "1.0.0",
   "description": "Clones a React element while preserving its original ref",
   "main": "cloneReferencedElement.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ide/react-native-clone-referenced-element.git"
+    "url": "git+https://github.com/ide/react-clone-referenced-element.git"
   },
   "keywords": [
-    "react-native",
+    "react",
     "clone",
     "element"
   ],
   "author": "James Ide",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ide/react-native-clone-referenced-element/issues"
+    "url": "https://github.com/ide/react-clone-referenced-element/issues"
   },
-  "homepage": "https://github.com/ide/react-native-clone-referenced-element#readme"
+  "homepage": "https://github.com/ide/react-clone-referenced-element#readme",
+  "peerDependencies": {
+    "react": "*"
+  }
 }
