@@ -1,6 +1,6 @@
 {
   "name": "react-clone-referenced-element",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Clones a React element while preserving its original ref",
   "main": "cloneReferencedElement.js",
   "repository": {
@@ -17,8 +17,5 @@
   "bugs": {
     "url": "https://github.com/ide/react-clone-referenced-element/issues"
   },
-  "homepage": "https://github.com/ide/react-clone-referenced-element#readme",
-  "peerDependencies": {
-    "react": "*"
-  }
+  "homepage": "https://github.com/ide/react-clone-referenced-element#readme"
 }
