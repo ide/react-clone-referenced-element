@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Clones a React element while preserving its original ref",
   "main": "cloneReferencedElement.js",
+  "types": "cloneReferencedElement.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ide/react-clone-referenced-element.git"
