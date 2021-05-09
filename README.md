@@ -1,4 +1,5 @@
-# cloneReferencedElement for React
+# cloneReferencedElement for React [![Tests](https://github.com/ide/react-clone-referenced-element/actions/workflows/tests.yaml/badge.svg)](https://github.com/ide/react-clone-referenced-element/actions/workflows/tests.yaml) [![codecov](https://codecov.io/gh/ide/react-clone-referenced-element/branch/main/graph/badge.svg?token=FwQSK9uKF7)](https://codecov.io/gh/ide/react-clone-referenced-element)
+
 
 This is a version of `React.cloneElement` that preserves the original element's callback ref even if you specify a new callback ref for the clone.
 
