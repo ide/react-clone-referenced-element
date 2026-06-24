@@ -3,26 +3,22 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 22.x, 24.x]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 24.x
     - name: Cache Node.js modules
       uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/node_modules
-        key: ${{ runner.OS }}-${{ matrix.node-version}}-node_modules-${{ hashFiles('yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('yarn.lock') }}
     - run: yarn --frozen-lockfile
-    - run: yarn test --coverage
-    - name: Create coverage report flag
-      id: codecov-flag
-      run: echo "flag=node_${NODE_VERSION/./_}" >> "$GITHUB_OUTPUT"
-      env:
-        NODE_VERSION: ${{ matrix.node-version }}
+    - run: yarn test
+    - name: Generate coverage report
+      run: |
+        mkdir -p coverage
+        yarn test --experimental-test-coverage \
+          --test-reporter=spec --test-reporter-destination=stdout \
+          --test-reporter=lcov --test-reporter-destination=coverage/lcov.info
     - uses: codecov/codecov-action@v5
-      with:
-        flags: ${{ steps.codecov-flag.outputs.flag }}

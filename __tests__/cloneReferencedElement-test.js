@@ -1,3 +1,8 @@
+'use strict';
+
+const { test, describe, before, after, mock } = require('node:test');
+const assert = require('node:assert');
+
 const React = require('react');
 const TestRenderer = require('react-test-renderer');
 
@@ -9,9 +14,16 @@ class TestComponent extends React.Component {
   }
 }
 
+// Asserts that the most recent call to a mock function received exactly the given arguments
+function assertLastCalledWith(fn, ...expectedArguments) {
+  const { calls } = fn.mock;
+  assert.ok(calls.length > 0, 'expected the mock to have been called at least once');
+  assert.deepStrictEqual(calls[calls.length - 1].arguments, expectedArguments);
+}
+
 test(`clones an element that uses both the original and cloned elements' callback refs`, () => {
-  const originalElementRef = jest.fn();
-  const clonedElementRef = jest.fn();
+  const originalElementRef = mock.fn();
+  const clonedElementRef = mock.fn();
 
   const originalElement = React.createElement(TestComponent, {
     ref: originalElementRef,
@@ -25,20 +37,20 @@ test(`clones an element that uses both the original and cloned elements' callbac
   const testRenderer = TestRenderer.create(clonedElement);
   const renderedComponent = testRenderer.getInstance();
 
-  expect(renderedComponent).toBeInstanceOf(TestComponent);
-  expect(renderedComponent.props).toMatchObject({ id: 'clone' });
+  assert.ok(renderedComponent instanceof TestComponent);
+  assert.strictEqual(renderedComponent.props.id, 'clone');
 
-  expect(originalElementRef).toHaveBeenLastCalledWith(renderedComponent);
-  expect(clonedElementRef).toHaveBeenLastCalledWith(renderedComponent);
+  assertLastCalledWith(originalElementRef, renderedComponent);
+  assertLastCalledWith(clonedElementRef, renderedComponent);
 
   testRenderer.unmount();
 
-  expect(originalElementRef).toHaveBeenLastCalledWith(null);
-  expect(clonedElementRef).toHaveBeenLastCalledWith(null);
+  assertLastCalledWith(originalElementRef, null);
+  assertLastCalledWith(clonedElementRef, null);
 });
 
 test(`uses the ref of the original element even if the clone has no ref`, () => {
-  const originalElementRef = jest.fn();
+  const originalElementRef = mock.fn();
 
   const originalElement = React.createElement(TestComponent, {
     ref: originalElementRef,
@@ -50,14 +62,14 @@ test(`uses the ref of the original element even if the clone has no ref`, () => 
   const testRenderer = TestRenderer.create(clonedElement);
   const renderedComponent = testRenderer.getInstance();
 
-  expect(renderedComponent).toBeInstanceOf(TestComponent);
-  expect(renderedComponent.props).toMatchObject({ id: 'clone' });
+  assert.ok(renderedComponent instanceof TestComponent);
+  assert.strictEqual(renderedComponent.props.id, 'clone');
 
-  expect(originalElementRef).toHaveBeenLastCalledWith(renderedComponent);
+  assertLastCalledWith(originalElementRef, renderedComponent);
 });
 
 test(`uses the ref of the cloned element even if the original has no ref`, () => {
-  const clonedElementRef = jest.fn();
+  const clonedElementRef = mock.fn();
 
   const originalElement = React.createElement(TestComponent);
   const clonedElement = cloneReferencedElement(originalElement, {
@@ -68,60 +80,58 @@ test(`uses the ref of the cloned element even if the original has no ref`, () =>
   const testRenderer = TestRenderer.create(clonedElement);
   const renderedComponent = testRenderer.getInstance();
 
-  expect(renderedComponent).toBeInstanceOf(TestComponent);
-  expect(renderedComponent.props).toMatchObject({ id: 'clone' });
+  assert.ok(renderedComponent instanceof TestComponent);
+  assert.strictEqual(renderedComponent.props.id, 'clone');
 
-  expect(clonedElementRef).toHaveBeenLastCalledWith(renderedComponent);
+  assertLastCalledWith(clonedElementRef, renderedComponent);
 });
 
 describe(`development`, () => {
-  beforeAll(() => {
+  let warn;
+
+  before(() => {
     global.__DEV__ = true;
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    warn = mock.method(console, 'warn', () => {});
   });
 
-  afterAll(() => {
-    console.warn.mockRestore();
+  after(() => {
+    warn.mock.restore();
     delete global.__DEV__;
   });
 
   test(`warns when the original element's ref is not a callback ref`, () => {
-    const clonedElementRef = jest.fn();
-
     const originalElement = React.createElement(TestComponent, { ref: 'test' });
     const clonedElement = cloneReferencedElement(originalElement, { ref() {} });
 
-    const testRenderer = TestRenderer.create(clonedElement);
-    const renderedComponent = testRenderer.getInstance();
+    TestRenderer.create(clonedElement);
 
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn).toHaveBeenCalledWith(
+    assert.strictEqual(warn.mock.calls.length, 1);
+    assert.deepStrictEqual(warn.mock.calls[0].arguments, [
       `Cloning an element with a ref that will be overwritten because it is not a function. Use a composable callback ref instead. Ignoring ref:`,
-      'test'
-    );
+      'test',
+    ]);
   });
 });
 
 describe(`production`, () => {
-  beforeAll(() => {
+  let warn;
+
+  before(() => {
     global.__DEV__ = false;
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    warn = mock.method(console, 'warn', () => {});
   });
 
-  afterAll(() => {
-    console.warn.mockRestore();
+  after(() => {
+    warn.mock.restore();
     delete global.__DEV__;
   });
 
   test(`doesn't warn when the original element's ref is not a callback ref`, () => {
-    const clonedElementRef = jest.fn();
-
     const originalElement = React.createElement(TestComponent, { ref: 'test' });
     const clonedElement = cloneReferencedElement(originalElement, { ref() {} });
 
-    const testRenderer = TestRenderer.create(clonedElement);
-    const renderedComponent = testRenderer.getInstance();
+    TestRenderer.create(clonedElement);
 
-    expect(console.warn).not.toHaveBeenCalled();
+    assert.strictEqual(warn.mock.calls.length, 0);
   });
 });
